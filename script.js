@@ -3,32 +3,29 @@ const seconds = document.querySelector(".seconds .number"),
   hours = document.querySelector(".hours .number"),
   days = document.querySelector(".days .number");
 
-let secValue = 11,
-  minValue = 30,
-  hourValue = 1,
-  dayValue = 13;
+// Target: July 10, 2026 at midnight (local time)
+const targetDate = new Date(2026, 6, 10, 0, 0, 0); // month is 0-indexed: 6 = July
 
 const timeFunction = setInterval(() => {
-  secValue--;
+  const now = new Date();
+  const diff = targetDate - now;
 
-  if (secValue === 0) {
-    minValue--;
-    secValue = 60;
-  }
-  if (minValue === 0) {
-    hourValue--;
-    minValue = 60;
-  }
-  if (hourValue === 0) {
-    dayValue--;
-    hourValue = 24;
-  }
-
-  if (dayValue === 0) {
+  if (diff <= 0) {
     clearInterval(timeFunction);
+    days.textContent = "00";
+    hours.textContent = "00";
+    minutes.textContent = "00";
+    seconds.textContent = "00";
+    return;
   }
+
+  const secValue = Math.floor((diff / 1000) % 60);
+  const minValue = Math.floor((diff / 1000 / 60) % 60);
+  const hourValue = Math.floor((diff / 1000 / 60 / 60) % 24);
+  const dayValue = Math.floor(diff / 1000 / 60 / 60 / 24);
+
   seconds.textContent = secValue < 10 ? `0${secValue}` : secValue;
   minutes.textContent = minValue < 10 ? `0${minValue}` : minValue;
   hours.textContent = hourValue < 10 ? `0${hourValue}` : hourValue;
   days.textContent = dayValue < 10 ? `0${dayValue}` : dayValue;
-}, 1000); //1000ms = 1s
+}, 1000);
